@@ -1,0 +1,17 @@
+[package]
+name = "md-ulb-pwrap"
+version = "0.0.1"
+edition = "2021"
+description = "Markdown utility functions for Rust."
+license = "BSD-3-Clause"
+readme = "../README.md"
+
+[lib]
+name = "md_ulb_pwrap"
+path = "src/lib.rs"
+
+[dependencies]
+unicode-linebreak = "0.1.4"
+
+[dev-dependencies]
+rstest = "0.16.0"
