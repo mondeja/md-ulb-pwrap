@@ -59,34 +59,34 @@ class MarkdownParagraphWrapper:
         result = False
         while True:
             try:
-                character = self.text[self.state_parser_index];
+                character = self.text[self.state_parser_index]
             except IndexError:
                 break
             self.state_parser_index += 1
-            self.parse_character(character);
+            self.parse_character(character)
             if self.state_parser_index == linebreak_index:
                 if self.state == EXITING_CODESPAN:
                     try:
                         next_character = self.text[self.state_parser_index]
                     except IndexError:
                         break
-                    self.parse_character(next_character);
+                    self.parse_character(next_character)
                     if self.state == INSIDE_TEXT:
                         result = True
                     break
                 else:
                     next_character = self.text[self.state_parser_index]
-                    if next_character == '-':
+                    if next_character == "-":
                         break
-                    elif next_character == '!':
+                    elif next_character == "!":
                         next2_character = self.text[self.state_parser_index + 1]
-                        if next2_character == '[':
+                        if next2_character == "[":
                             break
-                    elif next_character == ']':
+                    elif next_character == "]":
                         next2_character = self.text[self.state_parser_index + 1]
-                        if next2_character in ('(', '['):
+                        if next2_character in ("(", "["):
                             break
-                    result = self.state == INSIDE_TEXT;
+                    result = self.state == INSIDE_TEXT
                     break
         return result
 
@@ -152,8 +152,8 @@ def ulb_wrap_paragraph(text: str, width: int, first_line_width: int) -> str:
 
     reversed_text = text[::-1]
     for i, character in enumerate(result[::-1]):
-        if character != '\n':
+        if character != "\n":
             break
-        if reversed_text[i] != '\n':
+        if reversed_text[i] != "\n":
             result = result[:-1]
     return result

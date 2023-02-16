@@ -15,7 +15,7 @@ syntax.
 cargo add md-ulb-pwrap
 ```
 
-```rust
+````rust
 use md_ulb_pwrap::{ulb_wrap_paragraph};
 
 assert_eq!(
@@ -26,7 +26,7 @@ assert_eq!(
     ),
     "aaa\n``` ``  ` a b c ```\nccc",
 );
-```
+````
 
 ## Python bindings
 
@@ -34,24 +34,23 @@ assert_eq!(
 pip install md-ulb-pwrap
 ```
 
-```python
+````python
 from md_ulb_pwrap import ulb_wrap_paragraph
 
 markdown = "aaa ``` ``  ` a b c ``` ccc"
 expected_result = "aaa\n``` ``  ` a b c ```\nccc"
 assert modify_headings_offset(markdown, 3, 3) == expected_result
-```
+````
 
 ## Reference
 
-**ulb_wrap_paragraph**(text: *str*, width: *int*) -> *str*
+**ulb_wrap_paragraph**(text: _str_, width: _int_, first_line_width: <i>int</i>) -> <i>str</i>
 
-- **text** (*str*): The text to wrap.
-- **width** (*int*): The maximum width of the text.
-- **first_line_width** (*int*): The maximum width of the first line.
+- **text** (_str_): The text to wrap.
+- **width** (_int_): The maximum width of the lines after the first.
+- **first_line_width** (_int_): The maximum width of the first line.
 
-**Returns** (*str*): The wrapped text.
+**Returns** (_str_): The wrapped text.
 
-[Unicode Line Breaking Algorithm]: https://unicode.org/reports/tr14/
+[unicode line breaking algorithm]: https://unicode.org/reports/tr14/
 [container blocks]: https://spec.commonmark.org/0.30/#container-blocks
-

@@ -40,4 +40,4 @@ maturin develop --release && python3 test.py
 
 - According to the [Commonmark] spec, [link destinations](https://spec.commonmark.org/0.30/#link-destination) can include white spaces if they are escaped with a backslash. This is not supported by this library as is considered an strange practice. In that case, URLs must be encoded.
 
-[Commonmark]: https://spec.commonmark.org/0.30
+[commonmark]: https://spec.commonmark.org/0.30
