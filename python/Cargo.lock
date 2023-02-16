@@ -84,7 +84,7 @@ dependencies = [
 
 [[package]]
 name = "md-ulb-pwrap"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "unicode-linebreak",
 ]
@@ -144,7 +144,7 @@ dependencies = [
 
 [[package]]
 name = "py-md-ulb-pwrap"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "md-ulb-pwrap",
  "pyo3",

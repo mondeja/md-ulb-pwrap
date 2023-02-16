@@ -14,6 +14,7 @@ pub struct MarkdownParagraphWrapper<'a> {
     text_iterator: std::iter::Enumerate<std::str::Chars<'a>>,
     state_parser_text: String,
     state_parser_index: usize,
+    char_byte_indexes: std::str::CharIndices<'a>,
 
     width: usize,
     unicode_linebreaks: Vec<(usize, BreakOpportunity)>,
@@ -31,15 +32,19 @@ impl MarkdownParagraphWrapper<'_> {
         text: &str,
         width: usize,
     ) -> MarkdownParagraphWrapper {
+        let unicode_linebreaks = linebreaks(text).map(|(index, break_opportunity)| {
+            (index - 1, break_opportunity)
+        }).collect::<Vec<(usize, BreakOpportunity)>>();
+
+        // unicode-linebreak crate uses the byte index of the character succeeding the break
         MarkdownParagraphWrapper {
             text_iterator: text.chars().enumerate(),
             state_parser_text: text.to_string(),
+            char_byte_indexes: text.char_indices(),
             state_parser_index: 0,
 
             width: width,
-            unicode_linebreaks: linebreaks(text).map(|(index, break_opportunity)| {
-                (index - 1, break_opportunity)
-            }).collect::<Vec<(usize, BreakOpportunity)>>(),
+            unicode_linebreaks: unicode_linebreaks,
             current_line: String::new(),
             next_linebreak_index: 0,
             last_linebreak_index: 0,
@@ -171,11 +176,11 @@ impl Iterator for MarkdownParagraphWrapper<'_> {
 
     fn next(&mut self) -> Option<String> {
         let (index, character) = self.text_iterator.next().unwrap_or((0, '\0'));
+        
         if character == '\0' {
-            if self.current_line.len() > 0 {
-                let result = self.current_line.clone();
-                self.current_line = String::new();
-                return Some(result);
+            if self.next_linebreak_index > 0 {
+                self.next_linebreak_index = 0;
+                return Some(self.current_line.clone());
             }
             return None;
         }
@@ -185,16 +190,19 @@ impl Iterator for MarkdownParagraphWrapper<'_> {
                 index,
             );
         }
-
-        if index == self.next_linebreak_index {
-            if character != ' ' && character != '\n' {
+        
+        let byte_index = self.char_byte_indexes.next().unwrap().0;        
+        if byte_index == self.next_linebreak_index {
+            if character != '\n' && character != ' ' {
                 self.current_line.push(character);
-            }
+            } 
             self.last_linebreak_index = self.next_linebreak_index;
             self.state_parser_index = self.last_linebreak_index;
             self.next_linebreak_index = 0;
             let result = self.current_line.clone();
+
             self.current_line = String::new();
+            
             return Some(result);
         } else {
             self.current_line.push(character);
@@ -459,6 +467,17 @@ mod tests {
         &"a b c d e",
         usize::MAX,
         "a b c d e",
+    )]
+    #[case(
+        // UTF-8 characters
+        //
+        // unicode-linebreak uses byte indexes of chars
+        // to determine linebreak indexes, so if using
+        // array character indexes the next text would
+        // return: 'parámetro d\ne ancho d\ne'
+        &"parámetro de ancho de",
+        10,
+        "parámetro\nde ancho de",
     )]
     fn ulb_wrap_paragraph_test(
         #[case] text: &str,
