@@ -41,7 +41,7 @@ from md_ulb_pwrap import ulb_wrap_paragraph
 
 markdown = "aaa ``` ``  ` a b c ``` ccc"
 expected_result = "aaa\n``` ``  ` a b c ```\nccc"
-assert modify_headings_offset(markdown, 3, 3) == expected_result
+assert ulb_wrap_paragraph(markdown, 3, 3) == expected_result
 ````
 
 ## Reference
