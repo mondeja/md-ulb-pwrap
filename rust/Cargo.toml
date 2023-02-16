@@ -2,7 +2,7 @@
 name = "md-ulb-pwrap"
 version = "0.0.1"
 edition = "2021"
-description = "Markdown utility functions for Rust."
+description = "Markdown paragraph wrapper using Unicode Line Breaking Algorithm."
 license = "BSD-3-Clause"
 readme = "../README.md"
 
