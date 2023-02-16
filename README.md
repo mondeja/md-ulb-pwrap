@@ -1,10 +1,12 @@
 # md-ulb-pwrap
 
+[![Crate](https://img.shields.io/crates/v/md-ulb-pwrap?logo=rust)](https://crates.io/crates/md-ulb-pwrap) [![PyPI](https://img.shields.io/pypi/v/md-ulb-pwrap?logo=python&logoColor=white)](https://pypi.org/project/md-ulb-pwrap/)
+
 Markdown paragraph wrapper using [Unicode Line Breaking
 Algorithm]. Includes a Rust library with Python bindings.
 
-Wrap a Markdown paragraph using a maximum desired width. Only works for paragraphs without other [container blocks].
-
+Wrap a Markdown paragraph using a maximum desired width.
+Only works for paragraphs without other [container blocks].
 Respects the prohibition against wrapping text inside
 inline code blocks and other tweaks for Markdown inlines
 syntax.
