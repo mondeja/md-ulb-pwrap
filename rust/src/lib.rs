@@ -172,6 +172,11 @@ impl Iterator for MarkdownParagraphWrapper<'_> {
     fn next(&mut self) -> Option<String> {
         let (index, character) = self.text_iterator.next().unwrap_or((0, '\0'));
         if character == '\0' {
+            if self.current_line.len() > 0 {
+                let result = self.current_line.clone();
+                self.current_line = String::new();
+                return Some(result);
+            }
             return None;
         }
         if self.next_linebreak_index == 0 {
@@ -273,6 +278,11 @@ mod tests {
         &"aa bb cc",
         50,
         "aa bb cc",
+    )]
+    #[case(
+        &"a\n\n\né",
+        80,
+        "a\n\n\né",
     )]
     #[case(
         &"aaa `b` ccc",
@@ -444,6 +454,12 @@ mod tests {
         0,
         "\na\nb\nc\nd\ne\n",
     )]
+    #[case(
+        // maximum width
+        &"a b c d e",
+        usize::MAX,
+        "a b c d e",
+    )]
     fn ulb_wrap_paragraph_test(
         #[case] text: &str,
         #[case] width: usize,
@@ -479,6 +495,12 @@ mod tests {
         2,
         10,
         "aa b cc dd\nee",
+    )]
+    #[case(
+        &"aa b cc dd ee",
+        usize::MAX,
+        usize::MAX,
+        "aa b cc dd ee",
     )]
     fn ulb_wrap_paragraph_first_line_width_test(
         #[case] text: &str,
