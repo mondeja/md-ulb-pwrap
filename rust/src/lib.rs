@@ -1,5 +1,5 @@
+mod parser;
 mod pwrap;
-mod codespan_parser;
 
 use crate::pwrap::{MarkdownParagraphWrapper};
 

@@ -5,7 +5,7 @@ static INSIDE_CODESPAN: u8 = 0b100;
 static EXITING_CODESPAN: u8 = 0b1000;
 
 #[derive(Default, Debug)]
-pub struct MarkdownCodespanParser {
+pub struct MarkdownWrapOpportunitiesParser {
     pub context: u8,
     current_codespan_number_of_backticks_at_start: u8,
     current_codespan_number_of_backticks_inside: u8,
@@ -19,9 +19,9 @@ pub struct MarkdownCodespanParser {
     states: Vec<(u8, u8, u8, char, bool, bool, usize)>,
 }
 
-impl MarkdownCodespanParser {
+impl MarkdownWrapOpportunitiesParser {
     pub fn new() -> Self {
-        MarkdownCodespanParser {
+        MarkdownWrapOpportunitiesParser {
             context: 1,
             ..Default::default()
         }
