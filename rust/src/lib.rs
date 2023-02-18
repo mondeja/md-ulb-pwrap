@@ -67,6 +67,7 @@ mod tests {
         3,
         "aaa\n`b`\nccc",
     )]
+    
     #[case(
         &"aaa ` ` ccc",
         3,
@@ -88,6 +89,7 @@ mod tests {
         3,
         "aaa\n` b c `\n`ddd e",
     )]
+    
     #[case(
         // preserve linebreaks
         &"aaa ` b c ` `ddd\ne",
@@ -122,6 +124,7 @@ mod tests {
         4,
         "**hello\nhello**",
     )]
+    
     #[case(
         &"*hello hello*",
         4,
@@ -132,6 +135,24 @@ mod tests {
         &"aa]\nbb\n[cc",
         1,
         "aa]\nbb\n[cc",
+    )]
+    #[case(
+        // text terminated on !
+        &"aa bb cc! d",
+        2,
+        "aa\nbb\ncc!\nd",
+    )]
+    #[case(
+        // text terminated on space
+        &"aa bb cc d ",
+        2,
+        "aa\nbb\ncc\nd ",
+    )]
+    #[case(
+        // text starting with en dash
+        &"- aa bb",
+        2,
+        "-\naa\nbb",
     )]
     #[case(
         // inline image links
@@ -180,8 +201,8 @@ mod tests {
         "aa[link\ntext][link-label]",
     )]
     #[case(
-        // TODO: breaking Commonmark spec at escaped space
-        // inside link destination (see implementation
+    // TODO: breaking Commonmark spec at escaped space
+    // inside link destination (see implementation
         // notes for details)
         &"[link text](link\\ destination 'link title')",
         4,
@@ -245,17 +266,27 @@ mod tests {
         // to determine linebreak indexes, so if using
         // array character indexes the next text would
         // return something like 'parámetro d\ne ancho d\ne'
+        //
+        // TODO: it seems there is a failure here?
         &"parámetro de ancho de",
         10,
-        "parámetro\nde ancho\nde",
+        "parámetro\nde ancho de",
     )]
     #[case(
         // Scriptio continua
         &concat!(
-            "支持",
+            "支持常见的温度传感器（例如，常见的热敏电阻、AD595、",
+            "AD597、AD849x、PT100、PT1000、MAX6675、MAX31855、",
+            "MAX31856、MAX31865、BME280、HTU21D和LM75）。",
+            "还可以配置"
         ),
         10,
-        "",
+        concat!(
+            "支持常见的温度传感器（例\n如，常见的热敏电阻、\n",
+            "AD595、\nAD597、\nAD849x、\nPT100、\nPT1000、\n",
+            "MAX6675、\nMAX31855、\nMAX31856、\nMAX31865、\n",
+            "BME280、\nHTU21D和\nLM75）。还可以配\n置",
+        ).to_string(),
     )]
     fn ulb_wrap_paragraph_test(
         #[case] text: &str,

@@ -49,7 +49,7 @@ impl MarkdownParagraphWrapper {
     ) -> bool {
         let mut result = false;
         println!("      is_linebreak_possible({:?})", linebreak);
-        let mut _bindex = 0;
+        let mut _bindex = linebreak.0 - 1;
         let mut _character = '\0';
         loop {
             if self.codespan_parser.characters_i >= self.last_character_i {
@@ -66,43 +66,34 @@ impl MarkdownParagraphWrapper {
                 let (index, (bindex, character)) = self.characters[self.codespan_parser.characters_i];
                 _bindex = bindex;
                 _character = character;
-                self.codespan_parser.parse_character(character);
+                println!("      index: {}, bindex: {}, character: {}", index, bindex, character);
             }
 
-            println!("      _bindex: {}, _character: {}", _bindex, _character);
-
-            if _bindex + 1 == linebreak.0 {
+            println!("      _bindex: {}, _character: '{}'", _bindex, _character);
+            if _bindex == linebreak.0 {
+                println!("      HERE");
                 // reached next linebreak index
                 if linebreak.1 == Mandatory {
                     // is inside text?
-                    result = self.codespan_parser.could_wrap();
+                    result = self.codespan_parser.is_inside_text();
                 } else {
-                    result = self.codespan_parser.could_wrap();
-                    if result == true {
-                        println!("      HERE!");
-                        if self.codespan_parser.characters_i >= self.last_character_i {
-                            // reached end of text
+                    println!("      codespan_parser: {:?}", self.codespan_parser);
+                    
+                    if self.codespan_parser.is_inside_text() {
+                        let prev_character = self.characters[self.codespan_parser.characters_i - 1].1.1;
+                        if _character == '-' || prev_character == '-' {
                             break;
                         }
-                        
-                        if _character == '-' {
-                            result = false;
-                        } else if _character == '!' {
-                            let (_, (_, next_char)) = self.characters[self.codespan_parser.characters_i];
-                            if next_char == '[' {
-                                // image
-                                result = false;
-                            }
-                        } else if _character == ']' {
-                            let (_, (_, next_char)) = self.characters[self.codespan_parser.characters_i];
-                            if next_char == '(' || next_char == '[' {
-                                // link destination
-                                result = false;
-                            }
-                        }
+                        self.codespan_parser.backup_state();
+                        self.codespan_parser.parse_character(_character);
+                        result = self.codespan_parser.is_inside_link();
+                        self.codespan_parser.restore_state();
                     }
+                    println!("      result: {}", result);
                 }
                 break;
+            } else {
+                self.codespan_parser.parse_character(_character);
             }
         }
         result
@@ -117,7 +108,6 @@ impl MarkdownParagraphWrapper {
                 println!("  possible linebreak found: {:?}", (lb_i, lb_opp));
                 if lb_opp == Mandatory {
                     self.next_linebreak = (lb_i, lb_opp);
-                    break;
                 } else {
                     self.next_linebreak = (lb_i, lb_opp);
                     // Get next linebreak index to see if we can fit more text
@@ -155,7 +145,6 @@ impl MarkdownParagraphWrapper {
         // Store previous state to reset at end
         let initial_linebreaks_i = self.linebreaks_i;
         self.codespan_parser.backup_state();
-        println!("    self.linebreaks_i: {}", self.linebreaks_i);
         
         while self.linebreaks_i < self.linebreaks.len() {
             let (lb_i, lb_opp) = self.linebreaks[self.linebreaks_i];
@@ -165,13 +154,12 @@ impl MarkdownParagraphWrapper {
                 self.linebreaks_i += 1;
             }
         }
-        let result = self.codespan_parser.characters_i;
+        let result = self.codespan_parser.characters_i - 1;
 
         // Reset state
         self.linebreaks_i = initial_linebreaks_i;
         self.codespan_parser.restore_state();
         
-        println!("    self.linebreaks_i: {}", self.linebreaks_i);
         println!("    result: {}", result);
         return result;
     }

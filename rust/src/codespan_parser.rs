@@ -9,10 +9,14 @@ pub struct MarkdownCodespanParser {
     pub context: u8,
     current_codespan_number_of_backticks_at_start: u8,
     current_codespan_number_of_backticks_inside: u8,
+
+    previous_character: char,
+    inside_link: bool,
+    inside_image_link: bool,
     
     pub characters_i: usize,
 
-    state: (u8, u8, u8, usize),
+    states: Vec<(u8, u8, u8, char, bool, bool, usize)>,
 }
 
 impl MarkdownCodespanParser {
@@ -56,26 +60,52 @@ impl MarkdownCodespanParser {
                 }
             }
         }
+
+        if self.previous_character == '!' {
+            self.inside_image_link = character == '[';
+        } else {
+            self.inside_image_link = false;
+            if self.previous_character == ']' {
+                self.inside_link = character == '(' || character == '[';
+            } else {
+                self.inside_link = false;
+            }
+        }
+
+        self.previous_character = character;
+
         self.characters_i += 1;
     }
 
-    pub fn could_wrap(&self) -> bool {
+    pub fn is_inside_text(&self) -> bool {
         self.context & INSIDE_TEXT != 0
     }
 
+    pub fn is_inside_link(&self) -> bool {
+        !self.inside_link && !self.inside_image_link
+    }
+
     pub fn backup_state(&mut self) {
-        self.state = (
+        self.states.push((
             self.context,
             self.current_codespan_number_of_backticks_at_start,
             self.current_codespan_number_of_backticks_inside,
+            self.previous_character,
+            self.inside_link,
+            self.inside_image_link,
             self.characters_i,
-        );
+        ));
     }
 
     pub fn restore_state(&mut self) {
-        self.context = self.state.0;
-        self.current_codespan_number_of_backticks_at_start = self.state.1;
-        self.current_codespan_number_of_backticks_inside = self.state.2;
-        self.characters_i = self.state.3;
+        let state = self.states.pop().unwrap();
+
+        self.context = state.0;
+        self.current_codespan_number_of_backticks_at_start = state.1;
+        self.current_codespan_number_of_backticks_inside = state.2;
+        self.previous_character = state.3;
+        self.inside_link = state.4;
+        self.inside_image_link = state.5;
+        self.characters_i = state.6;
     }
 }
