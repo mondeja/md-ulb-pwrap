@@ -97,24 +97,22 @@ impl MarkdownParagraphWrapper {
 
     fn update_next_linebreak(&mut self) {
         while self.linebreaks_i < self.linebreaks_length {
-            let (lb_i, lb_opp) = self.linebreaks[self.linebreaks_i];
-            if !self.is_linebreak_possible((lb_i, lb_opp)) {
+            let linebreak = self.linebreaks[self.linebreaks_i];
+            if !self.is_linebreak_possible(linebreak) {
                 self.linebreaks_i += 1;
                 continue;
             }
 
-            // Is a possible linebreak
             self.linebreaks_i += 1;
 
-            // is is a mandatory linebreak, set it as next
-            if lb_opp == Mandatory {
-                self.next_linebreak = (lb_i, lb_opp);
+            if linebreak.1 == Mandatory {
+                self.next_linebreak = linebreak;
                 break;
             }
 
             // Get next linebreak index to see if we
             // can fit more text in the line
-            self.next_linebreak = (lb_i, lb_opp);
+            self.next_linebreak = linebreak;
             let mut next_lb = self.next_linebreak;
             while self.linebreaks_i < self.linebreaks_length {
                 let current_line_width =
@@ -137,8 +135,8 @@ impl MarkdownParagraphWrapper {
         self.codespan_parser.backup_state();
 
         while self.linebreaks_i < self.linebreaks_length {
-            let (lb_i, lb_opp) = self.linebreaks[self.linebreaks_i];
-            if self.is_linebreak_possible((lb_i, lb_opp)) {
+            let linebreak = self.linebreaks[self.linebreaks_i];
+            if self.is_linebreak_possible(linebreak) {
                 break;
             }
             self.linebreaks_i += 1;
