@@ -47,8 +47,8 @@ impl MarkdownParagraphWrapper {
             linebreak: (usize, BreakOpportunity),
     ) -> bool {
         let mut result = false;
-        let mut _bindex = linebreak.0 - 1;
-        let mut _character = '\0';
+        let mut bindex = linebreak.0 - 1;
+        let mut character: char;
         loop {
             if self.codespan_parser.characters_i >= self.last_character_i {
                 // reached end of text
@@ -59,36 +59,38 @@ impl MarkdownParagraphWrapper {
                 // detected because at this point we are before
                 // the break, so keep updating the bindex until
                 // the one of the break is reached
-                _bindex += 1;
+                bindex += 1;
+                character = '\0';
             } else {
-                let (_, (bindex, character)) = self.characters[
+                let (_, (bindex_, character_)) = self.characters[
                     self.codespan_parser.characters_i
                 ];
-                _bindex = bindex;
-                _character = character;
+                bindex = bindex_;
+                character = character_;
             }
 
-            if _bindex == linebreak.0 {
-                // reached next linebreak index
-                if linebreak.1 == Mandatory {
-                    // is inside text?
-                    result = self.codespan_parser.is_inside_text();
-                } else if self.codespan_parser.is_inside_text() {
-                    let (_, (_, prev_character)) = self.characters[
-                        self.codespan_parser.characters_i - 1
-                    ];
-                    if _character == '-' || prev_character == '-' {
-                        break;
-                    }
-                    self.codespan_parser.backup_state();
-                    self.codespan_parser.parse_character(_character);
-                    result = self.codespan_parser.is_inside_link();
-                    self.codespan_parser.restore_state();
-                }
-                break;
-            } else {
-                self.codespan_parser.parse_character(_character);
+            if bindex != linebreak.0 {
+                self.codespan_parser.parse_character(character);
+                continue;
             }
+
+            // reached next linebreak index
+            if linebreak.1 == Mandatory {
+                // is inside text?
+                result = self.codespan_parser.is_inside_text();
+            } else if self.codespan_parser.is_inside_text() {
+                let (_, (_, prev_character)) = self.characters[
+                    self.codespan_parser.characters_i - 1
+                ];
+                if character == '-' || prev_character == '-' {
+                    break;
+                }
+                self.codespan_parser.backup_state();
+                self.codespan_parser.parse_character(character);
+                result = self.codespan_parser.is_inside_link();
+                self.codespan_parser.restore_state();
+            }
+            break;
         }
         result
     }
@@ -110,12 +112,11 @@ impl MarkdownParagraphWrapper {
                 break;
             }
 
-
             // Get next linebreak index to see if we
             // can fit more text in the line
             self.next_linebreak = (lb_i, lb_opp);
             let mut next_lb = self.next_linebreak;
-            loop {
+            while self.linebreaks_i < self.linebreaks_length {
                 let current_line_width =
                     self.get_next_linebreak_index()
                     - self.last_linebreak_i - 1;
@@ -124,9 +125,6 @@ impl MarkdownParagraphWrapper {
                 }
                 next_lb = self.linebreaks[self.linebreaks_i];
                 self.linebreaks_i += 1;
-                if self.linebreaks_i == self.linebreaks_length {
-                    break;
-                }
             }
             self.next_linebreak = next_lb;
             break;
