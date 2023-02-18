@@ -266,11 +266,14 @@ mod tests {
         // to determine linebreak indexes, so if using
         // array character indexes the next text would
         // return something like 'parámetro d\ne ancho d\ne'
-        //
-        // TODO: it seems there is a failure here?
         &"parámetro de ancho de",
         10,
         "parámetro\nde ancho de",
+    )]
+    #[case(
+        &"parámetro de ancho de caracteres de",
+        10,
+        "parámetro\nde ancho\nde\ncaracteres\nde",
     )]
     #[case(
         // Scriptio continua

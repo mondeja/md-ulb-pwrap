@@ -71,7 +71,7 @@ impl MarkdownParagraphWrapper {
                 if linebreak.1 == Mandatory {
                     // is inside text?
                     result = self.codespan_parser.is_inside_text();
-                } else {                   
+                } else {                  
                     if self.codespan_parser.is_inside_text() {
                         let prev_character = self.characters[self.codespan_parser.characters_i - 1].1.1;
                         if _character == '-' || prev_character == '-' {
