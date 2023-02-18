@@ -46,7 +46,6 @@ impl MarkdownParagraphWrapper {
             &mut self,
             linebreak: (usize, BreakOpportunity),
     ) -> bool {
-        let mut result = false;
         let mut bindex = linebreak.0 - 1;
         let mut character: char;
         loop {
@@ -77,7 +76,7 @@ impl MarkdownParagraphWrapper {
             // reached next linebreak index
             if linebreak.1 == Mandatory {
                 // is inside text?
-                result = self.codespan_parser.is_inside_text();
+                return self.codespan_parser.is_inside_text();
             } else if self.codespan_parser.is_inside_text() {
                 let (_, (_, prev_character)) = self.characters[
                     self.codespan_parser.characters_i - 1
@@ -87,12 +86,13 @@ impl MarkdownParagraphWrapper {
                 }
                 self.codespan_parser.backup_state();
                 self.codespan_parser.parse_character(character);
-                result = self.codespan_parser.is_inside_link();
+                let result = self.codespan_parser.is_inside_link();
                 self.codespan_parser.restore_state();
+                return result;
             }
             break;
         }
-        result
+        return false;
     }
 
     fn update_next_linebreak(&mut self) {
@@ -104,16 +104,14 @@ impl MarkdownParagraphWrapper {
             }
 
             self.linebreaks_i += 1;
+            self.next_linebreak = linebreak;
 
             if linebreak.1 == Mandatory {
-                self.next_linebreak = linebreak;
                 break;
             }
 
             // Get next linebreak index to see if we
             // can fit more text in the line
-            self.next_linebreak = linebreak;
-            let mut next_lb = self.next_linebreak;
             while self.linebreaks_i < self.linebreaks_length {
                 let current_line_width =
                     self.get_next_linebreak_index()
@@ -121,10 +119,11 @@ impl MarkdownParagraphWrapper {
                 if current_line_width > self.width {
                     break;
                 }
-                next_lb = self.linebreaks[self.linebreaks_i];
+                self.next_linebreak = self.linebreaks[
+                    self.linebreaks_i
+                ];
                 self.linebreaks_i += 1;
             }
-            self.next_linebreak = next_lb;
             break;
         }
     }

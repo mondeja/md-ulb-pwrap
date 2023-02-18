@@ -1,10 +1,17 @@
 mod parser;
-mod pwrap;
+pub mod pwrap;
 
 use crate::pwrap::MarkdownParagraphWrapper;
 
-pub fn ulb_wrap_paragraph(text: &str, width: usize, first_line_width: usize) -> String {
-    MarkdownParagraphWrapper::new(text, first_line_width).wrap(width)
+pub fn ulb_wrap_paragraph(
+        text: &str,
+        width: usize,
+        first_line_width: usize,
+) -> String {
+    MarkdownParagraphWrapper::new(
+        text,
+        first_line_width,
+    ).wrap(width)
 }
 
 #[cfg(test)]
@@ -124,16 +131,40 @@ mod tests {
         "*hello\nhello*",
     )]
     #[case(
+        // LFCR newlines
+        &"a\r\nb\r\nc\r\n",
+        4,
+        "a\r\nb\r\nc\r\n",
+    )]
+    #[case(
+        // All LFCR newlines
+        &"\r\n\r\n\r\n",
+        4,
+        "\r\n\r\n\r\n",
+    )]
+    #[case(
+        // All newlines
+        &"\n\n\n",
+        4,
+        "\n\n\n",
+    )]
+    #[case(
         // square bracket don't break lines
-        &"aa]\nbb\n[cc",
+        &"aa]bb[cc",
         1,
-        "aa]\nbb\n[cc",
+        "aa]bb[cc",
     )]
     #[case(
         // text terminated on !
-        &"aa bb cc! d",
+        &"aa bb cc!",
         2,
-        "aa\nbb\ncc!\nd",
+        "aa\nbb\ncc!",
+    )]
+    #[case(
+        // text terminated on [
+        &"aa bb cc[",
+        2,
+        "aa\nbb\ncc[",
     )]
     #[case(
         // text terminated on space
@@ -284,7 +315,11 @@ mod tests {
             "BME280、\nHTU21D和\nLM75）。还可以配\n置",
         ).to_string(),
     )]
-    fn ulb_wrap_paragraph_test(#[case] text: &str, #[case] width: usize, #[case] expected: String) {
+    fn ulb_wrap_paragraph_test(
+            #[case] text: &str,
+            #[case] width: usize,
+            #[case] expected: String,
+    ) {
         assert_eq!(ulb_wrap_paragraph(text, width, width), expected,);
     }
 }
