@@ -1,13 +1,9 @@
 mod parser;
 mod pwrap;
 
-use crate::pwrap::{MarkdownParagraphWrapper};
+use crate::pwrap::MarkdownParagraphWrapper;
 
-pub fn ulb_wrap_paragraph(
-    text: &str,
-    width: usize,
-    first_line_width: usize,
-) -> String {
+pub fn ulb_wrap_paragraph(text: &str, width: usize, first_line_width: usize) -> String {
     MarkdownParagraphWrapper::new(text, first_line_width).wrap(width)
 }
 
@@ -15,7 +11,7 @@ pub fn ulb_wrap_paragraph(
 mod tests {
     use super::*;
     use rstest::rstest;
-    
+
     #[rstest]
     #[case(
         &"aa bb cc",
@@ -67,7 +63,6 @@ mod tests {
         3,
         "aaa\n`b`\nccc",
     )]
-    
     #[case(
         &"aaa ` ` ccc",
         3,
@@ -89,7 +84,6 @@ mod tests {
         3,
         "aaa\n` b c `\n`ddd e",
     )]
-    
     #[case(
         // preserve linebreaks
         &"aaa ` b c ` `ddd\ne",
@@ -124,7 +118,6 @@ mod tests {
         4,
         "**hello\nhello**",
     )]
-    
     #[case(
         &"*hello hello*",
         4,
@@ -291,14 +284,7 @@ mod tests {
             "BME280、\nHTU21D和\nLM75）。还可以配\n置",
         ).to_string(),
     )]
-    fn ulb_wrap_paragraph_test(
-        #[case] text: &str,
-        #[case] width: usize,
-        #[case] expected: String,
-    ) {
-        assert_eq!(
-            ulb_wrap_paragraph(text, width, width),
-            expected,
-        );
+    fn ulb_wrap_paragraph_test(#[case] text: &str, #[case] width: usize, #[case] expected: String) {
+        assert_eq!(ulb_wrap_paragraph(text, width, width), expected,);
     }
 }
