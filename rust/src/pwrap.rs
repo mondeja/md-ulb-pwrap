@@ -96,34 +96,40 @@ impl MarkdownParagraphWrapper {
     fn update_next_linebreak(&mut self) {
         while self.linebreaks_i < self.linebreaks_length {
             let (lb_i, lb_opp) = self.linebreaks[self.linebreaks_i];
-            if self.is_linebreak_possible((lb_i, lb_opp)) {
+            if !self.is_linebreak_possible((lb_i, lb_opp)) {
                 self.linebreaks_i += 1;
-                if lb_opp == Mandatory {
-                    self.next_linebreak = (lb_i, lb_opp);
-                } else {
-                    self.next_linebreak = (lb_i, lb_opp);
-                    // Get next linebreak index to see if we
-                    // can fit more text in the line
-                    let mut next_lb = self.next_linebreak;
-                    loop {
-                        let current_line_width =
-                            self.get_next_linebreak_index()
-                            - self.last_linebreak_i - 1;
-                        if current_line_width > self.width {
-                            break;
-                        }
-                        next_lb = self.linebreaks[self.linebreaks_i];
-                        self.linebreaks_i += 1;
-                        if self.linebreaks_i == self.linebreaks_length {
-                            break;
-                        }
-                    }
-                    self.next_linebreak = next_lb;
+                continue;
+            }
+
+            // Is a possible linebreak
+            self.linebreaks_i += 1;
+
+            // is is a mandatory linebreak, set it as next
+            if lb_opp == Mandatory {
+                self.next_linebreak = (lb_i, lb_opp);
+                break;
+            }
+
+
+            // Get next linebreak index to see if we
+            // can fit more text in the line
+            self.next_linebreak = (lb_i, lb_opp);
+            let mut next_lb = self.next_linebreak;
+            loop {
+                let current_line_width =
+                    self.get_next_linebreak_index()
+                    - self.last_linebreak_i - 1;
+                if current_line_width > self.width {
                     break;
                 }
-            } else {
+                next_lb = self.linebreaks[self.linebreaks_i];
                 self.linebreaks_i += 1;
+                if self.linebreaks_i == self.linebreaks_length {
+                    break;
+                }
             }
+            self.next_linebreak = next_lb;
+            break;
         }
     }
 
