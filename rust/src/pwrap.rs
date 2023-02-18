@@ -6,7 +6,6 @@ use unicode_linebreak::{
     BreakOpportunity::{Mandatory},
 };
 
-#[derive(Debug)]
 pub struct MarkdownParagraphWrapper {
     width: usize,
 

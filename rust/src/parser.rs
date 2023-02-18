@@ -4,7 +4,7 @@ static ENTERING_CODESPAN: u8 = 0b10;
 static INSIDE_CODESPAN: u8 = 0b100;
 static EXITING_CODESPAN: u8 = 0b1000;
 
-#[derive(Default, Debug)]
+#[derive(Default)]
 pub struct MarkdownWrapOpportunitiesParser {
     pub context: u8,
     current_codespan_number_of_backticks_at_start: u8,
