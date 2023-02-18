@@ -286,7 +286,6 @@ mod tests {
         2,
         "\n\n\naa\nbb\ncc",
     )]
-    /*
     #[case(
         &"\n\n\naa bb cc\n\n\n",
         2,
@@ -350,7 +349,7 @@ mod tests {
         "aaa\n` b c `\n`ddd\ne",
     )]
     #[case(
-        // don't at strong spans
+        // don't wrap at strong spans
         &"a **hola**",
         2,
         "a\n**hola**",
@@ -361,7 +360,7 @@ mod tests {
         "a\n__hola__",
     )]
     #[case(
-        // don't at italic spans
+        // don't wrap at italic spans
         &"a *hola*",
         2,
         "a\n*hola*",
@@ -515,7 +514,6 @@ mod tests {
         10,
         "",
     )]
-    */
     fn ulb_wrap_paragraph_test(
         #[case] text: &str,
         #[case] width: usize,

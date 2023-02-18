@@ -59,6 +59,10 @@ impl MarkdownCodespanParser {
         self.characters_i += 1;
     }
 
+    pub fn could_wrap(&self) -> bool {
+        self.context & INSIDE_TEXT != 0
+    }
+
     pub fn backup_state(&mut self) {
         self.state = (
             self.context,
