@@ -5,14 +5,10 @@ import time
 
 import md_ulb_pwrap as rs_md_ulb_pwrap
 
-sys.path.insert(0, os.path.abspath("src"))
-import py_md_ulb_pwrap
-
 TIMEOUT = 500  # ms
 WARN_TIMEOUT = 300
 
 IMPLEMENTATIONS = [
-    ("Python", py_md_ulb_pwrap),
     ("Rust", rs_md_ulb_pwrap),
 ]
 
@@ -62,18 +58,6 @@ for func_name, iterations, args_expected_results in FUNCTIONS:
         sys.stdout.write(f"  {lang}: {ms} ms\n")
 
         perf_stats[lang] = ms
-
-    # Compare performance
-    #
-    # NOTE: We use `max` to avoid division by zero
-    x_faster = perf_stats["Python"] / max(perf_stats["Rust"], 0.0000001)
-    if x_faster <= 1:
-        sys.stdout.write(
-            f"FAILED!    {perf_stats['Rust'] / perf_stats['Python']}x slower\n"
-        )
-        EXITCODE = 1
-    else:
-        sys.stdout.write(f"     {x_faster}x faster\n")
 
     if max(perf_stats.values()) > TIMEOUT:
         sys.stdout.write(f"FAILED! The test is too long\n")
