@@ -6,10 +6,9 @@ Markdown paragraph wrapper using [Unicode Line Breaking
 Algorithm]. Includes a Rust library with Python bindings.
 
 Wrap a Markdown paragraph using a maximum desired width.
-Only works for paragraphs without other [container blocks].
-Respects the prohibition against wrapping text inside
-inline code blocks and other tweaks for Markdown inlines
-syntax.
+Only works for paragraphs that don't contain other
+[container blocks]. Respects the prohibition against wrapping
+text inside inline code blocks and links.
 
 ## Rust library
 
@@ -18,7 +17,7 @@ cargo add md-ulb-pwrap
 ```
 
 ````rust
-use md_ulb_pwrap::{ulb_wrap_paragraph};
+use md_ulb_pwrap::ulb_wrap_paragraph;
 
 assert_eq!(
     ulb_wrap_paragraph(

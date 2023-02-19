@@ -7,3 +7,9 @@ repos:
     rev: 23.1.0
     hooks:
       - id: black
+  - repo: https://github.com/doublify/pre-commit-rust
+    rev: v1.0
+    hooks:
+      - id: cargo-check
+      - id: clippy
+        args: [--, -A, clippy::comparison-chain]

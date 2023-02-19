@@ -55,9 +55,7 @@ jobs:
             rust/target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}-${{ matrix.rust-toolchain }}
       - name: Run
-        run: |
-          cd rust
-          cargo test
+        run: cargo test -p md-ulb-pwrap
 
   test-python:
     name: Test Python bindings
@@ -93,9 +91,7 @@ jobs:
           pip install -r dev-requirements.txt
           pip install .
       - name: Test
-        run: |
-          cd python
-          python test.py
+        run: python python/test.py
 
   linux-py-wheels:
     name: Build Linux Python wheels
