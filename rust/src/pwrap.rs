@@ -1,7 +1,11 @@
 use crate::parser::MarkdownWrapOpportunitiesParser;
 use unicode_linebreak::{linebreaks, BreakOpportunity, BreakOpportunity::Mandatory};
 
-static CHARACTERS_TO_SKIP_WRAP: [char; 2] = ['-', '/'];
+static LINK_BREAKING_CHARACTERS: [char; 2] = ['-', '/'];
+
+fn is_link_breaking_character(character: char) -> bool {
+    LINK_BREAKING_CHARACTERS.contains(&character)
+}
 
 pub struct MarkdownParagraphWrapper {
     width: usize,
@@ -29,9 +33,9 @@ impl MarkdownParagraphWrapper {
 
             characters: text.char_indices().enumerate().collect(),
             characters_i: 0,
-            linebreaks: linebreaks,
+            linebreaks,
             linebreaks_i: 0,
-            linebreaks_length: linebreaks_length,
+            linebreaks_length,
             codespan_parser: MarkdownWrapOpportunitiesParser::new(),
             last_character_i: text.chars().count(),
 
@@ -82,9 +86,10 @@ impl MarkdownParagraphWrapper {
                 let (_, (_, prev_character)) = self.characters[
                     self.codespan_parser.characters_i - 1
                 ];
-                if CHARACTERS_TO_SKIP_WRAP.contains(&character) ||
-                        CHARACTERS_TO_SKIP_WRAP.contains(&prev_character) {
-                    break
+
+                if is_link_breaking_character(character) ||
+                        is_link_breaking_character(prev_character) {
+                    break;
                 }
                 self.codespan_parser.backup_state();
                 self.codespan_parser.parse_character(character);
@@ -94,7 +99,7 @@ impl MarkdownParagraphWrapper {
             }
             break;
         }
-        return false;
+        false
     }
 
     fn update_next_linebreak(&mut self) {
@@ -148,7 +153,7 @@ impl MarkdownParagraphWrapper {
         self.linebreaks_i = initial_linebreaks_i;
         self.codespan_parser.restore_state();
 
-        return result;
+        result
     }
 
     pub fn wrap(&mut self, width: usize) -> String {
@@ -210,6 +215,6 @@ impl Iterator for MarkdownParagraphWrapper {
         }
 
         self.current_line.push(character);
-        return self.next();
+        self.next()
     }
 }
