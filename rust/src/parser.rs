@@ -13,7 +13,7 @@ pub struct MarkdownWrapOpportunitiesParser {
     previous_character: char,
     inside_link: bool,
     inside_image_link: bool,
-    
+
     pub characters_i: usize,
 
     states: Vec<(u8, u8, u8, char, bool, bool, usize)>,
@@ -49,8 +49,9 @@ impl MarkdownWrapOpportunitiesParser {
             if character == '`' {
                 self.current_codespan_number_of_backticks_inside += 1;
             } else {
-                if self.current_codespan_number_of_backticks_inside ==
-                self.current_codespan_number_of_backticks_at_start {
+                if self.current_codespan_number_of_backticks_inside
+                    == self.current_codespan_number_of_backticks_at_start
+                {
                     self.context = INSIDE_TEXT;
                     self.current_codespan_number_of_backticks_at_start = 0;
                     self.current_codespan_number_of_backticks_inside = 0;

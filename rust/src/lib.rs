@@ -1,21 +1,24 @@
 mod parser;
-mod pwrap;
+pub mod pwrap;
 
-use crate::pwrap::{MarkdownParagraphWrapper};
+use crate::pwrap::MarkdownParagraphWrapper;
 
 pub fn ulb_wrap_paragraph(
-    text: &str,
-    width: usize,
-    first_line_width: usize,
+        text: &str,
+        width: usize,
+        first_line_width: usize,
 ) -> String {
-    MarkdownParagraphWrapper::new(text, first_line_width).wrap(width)
+    MarkdownParagraphWrapper::new(
+        text,
+        first_line_width,
+    ).wrap(width)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use rstest::rstest;
-    
+
     #[rstest]
     #[case(
         &"aa bb cc",
@@ -67,7 +70,6 @@ mod tests {
         3,
         "aaa\n`b`\nccc",
     )]
-    
     #[case(
         &"aaa ` ` ccc",
         3,
@@ -89,7 +91,6 @@ mod tests {
         3,
         "aaa\n` b c `\n`ddd e",
     )]
-    
     #[case(
         // preserve linebreaks
         &"aaa ` b c ` `ddd\ne",
@@ -124,23 +125,46 @@ mod tests {
         4,
         "**hello\nhello**",
     )]
-    
     #[case(
         &"*hello hello*",
         4,
         "*hello\nhello*",
     )]
     #[case(
+        // LFCR newlines
+        &"a\r\nb\r\nc\r\n",
+        4,
+        "a\r\nb\r\nc\r\n",
+    )]
+    #[case(
+        // All LFCR newlines
+        &"\r\n\r\n\r\n",
+        4,
+        "\r\n\r\n\r\n",
+    )]
+    #[case(
+        // All newlines
+        &"\n\n\n",
+        4,
+        "\n\n\n",
+    )]
+    #[case(
         // square bracket don't break lines
-        &"aa]\nbb\n[cc",
+        &"aa]bb[cc",
         1,
-        "aa]\nbb\n[cc",
+        "aa]bb[cc",
     )]
     #[case(
         // text terminated on !
-        &"aa bb cc! d",
+        &"aa bb cc!",
         2,
-        "aa\nbb\ncc!\nd",
+        "aa\nbb\ncc!",
+    )]
+    #[case(
+        // text terminated on [
+        &"aa bb cc[",
+        2,
+        "aa\nbb\ncc[",
     )]
     #[case(
         // text terminated on space
@@ -292,13 +316,10 @@ mod tests {
         ).to_string(),
     )]
     fn ulb_wrap_paragraph_test(
-        #[case] text: &str,
-        #[case] width: usize,
-        #[case] expected: String,
+            #[case] text: &str,
+            #[case] width: usize,
+            #[case] expected: String,
     ) {
-        assert_eq!(
-            ulb_wrap_paragraph(text, width, width),
-            expected,
-        );
+        assert_eq!(ulb_wrap_paragraph(text, width, width), expected,);
     }
 }

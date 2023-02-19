@@ -1,10 +1,10 @@
-use md_ulb_pwrap::{ulb_wrap_paragraph};
+use md_ulb_pwrap::pwrap::MarkdownParagraphWrapper;
 use pyo3::prelude::*;
 
 #[pyfunction]
 #[pyo3(name = "ulb_wrap_paragraph")]
 fn py_ulb_wrap_paragraph(text: &str, width: usize, first_line_width: usize) -> PyResult<String> {
-    Ok(ulb_wrap_paragraph(text, width, first_line_width))
+    Ok(MarkdownParagraphWrapper::new(text, first_line_width).wrap(width))
 }
 
 #[pymodule]
