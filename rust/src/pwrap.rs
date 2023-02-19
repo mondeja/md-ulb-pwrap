@@ -1,6 +1,7 @@
 use crate::parser::MarkdownWrapOpportunitiesParser;
-
 use unicode_linebreak::{linebreaks, BreakOpportunity, BreakOpportunity::Mandatory};
+
+static CHARACTERS_TO_SKIP_WRAP: [char; 2] = ['-', '/'];
 
 pub struct MarkdownParagraphWrapper {
     width: usize,
@@ -81,8 +82,9 @@ impl MarkdownParagraphWrapper {
                 let (_, (_, prev_character)) = self.characters[
                     self.codespan_parser.characters_i - 1
                 ];
-                if character == '-' || prev_character == '-' {
-                    break;
+                if CHARACTERS_TO_SKIP_WRAP.contains(&character) ||
+                        CHARACTERS_TO_SKIP_WRAP.contains(&prev_character) {
+                    break
                 }
                 self.codespan_parser.backup_state();
                 self.codespan_parser.parse_character(character);

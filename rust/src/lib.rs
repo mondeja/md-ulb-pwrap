@@ -233,6 +233,12 @@ mod tests {
         "[link\ntext](link\\\ndestination\n'link\ntitle')",
     )]
     #[case(
+        // Don't wrap on '/' character
+        &"[foo bar](https://foo.bar/baz/qux/fox)",
+        1,
+        "[foo\nbar](https://foo.bar/baz/qux/fox)",
+    )]
+    #[case(
         // hard line breaks
         &"hard  \nline break",
         1,
