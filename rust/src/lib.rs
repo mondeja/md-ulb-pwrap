@@ -326,6 +326,6 @@ mod tests {
             #[case] width: usize,
             #[case] expected: String,
     ) {
-        assert_eq!(ulb_wrap_paragraph(text, width, width), expected,);
+        assert_eq!(ulb_wrap_paragraph(text, width, width), expected);
     }
 }

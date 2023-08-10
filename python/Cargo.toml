@@ -1,6 +1,6 @@
 [package]
 name = "py-md-ulb-pwrap"
-version = "0.0.3"
+version = "0.1.0"
 edition = "2021"
 description = "Python bindings for Rust crate md-ulb-pwrap."
 readme = "../README.md"
