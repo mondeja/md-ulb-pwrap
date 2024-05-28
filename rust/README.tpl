@@ -25,3 +25,13 @@ assert_eq!(
     "aaa\n``` ``  ` a b c ```\nccc",
 );
 ````
+
+## Reference
+
+**ulb_wrap_paragraph**(text: _&str_, width: _usize_, first_line_width: <i>usize</i>) -> <i>String</i>
+
+- **text** (_&str_): The text to wrap.
+- **width** (_usize_): The maximum width of the lines after the first.
+- **first_line_width** (_usize_): The maximum width of the first line.
+
+**Returns** (_String_): The wrapped text.
