@@ -12,7 +12,6 @@ pre-commit install
 ### Run tests
 
 ```bash
-cd rust
 cargo test
 ```
 

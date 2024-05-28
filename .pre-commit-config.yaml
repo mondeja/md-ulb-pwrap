@@ -1,10 +1,14 @@
 repos:
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.1
+    rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
+        args:
+          - --cache
+          - --cache-location=.prettier-cache
+          - --ignore-path=.gitignore
   - repo: https://github.com/psf/black
-    rev: 23.7.0
+    rev: 24.4.2
     hooks:
       - id: black
   - repo: https://github.com/doublify/pre-commit-rust
@@ -13,3 +17,27 @@ repos:
       - id: cargo-check
       - id: clippy
         args: [--, -A, clippy::comparison-chain]
+  - repo: https://github.com/mondeja/rust-pc-hooks
+    rev: v1.1.0
+    hooks:
+      - id: cargo-readme
+        alias: cargo-readme-workspace
+        name: cargo-readme-workspace
+        args:
+          - --project-root=rust
+          - --output=../README.md
+          - --template=../README.tpl
+      - id: cargo-readme
+        alias: cargo-readme-rust
+        name: cargo-readme-rust
+        args:
+          - --project-root=rust
+          - --output=README.md
+          - --template=README.tpl
+      - id: cargo-readme
+        alias: cargo-readme-python
+        name: cargo-readme-python
+        args:
+          - --project-root=rust
+          - --output=../python/README.md
+          - --template=../python/README.tpl

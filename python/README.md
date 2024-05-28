@@ -18,26 +18,7 @@ text inside inline code blocks and links.
 [unicode line breaking algorithm]: https://unicode.org/reports/tr14/
 [container blocks]: https://spec.commonmark.org/0.30/#container-blocks
 
-## Rust library
-
-```bash
-cargo add md-ulb-pwrap
-```
-
-````rust
-use md_ulb_pwrap::ulb_wrap_paragraph;
-
-assert_eq!(
-    ulb_wrap_paragraph(
-        &"aaa ``` ``  ` a b c ``` ccc",
-        3,
-        3,
-    ),
-    "aaa\n``` ``  ` a b c ```\nccc",
-);
-````
-
-## Python bindings
+## Usage
 
 ```bash
 pip install md-ulb-pwrap

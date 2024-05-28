@@ -2,6 +2,8 @@ target/
 venv*/
 /Cargo.lock
 /pyproject.toml
+node_modules/
+.prettier-cache
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
