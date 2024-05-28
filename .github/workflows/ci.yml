@@ -106,7 +106,7 @@ jobs:
           args: --release --sdist -o dist --find-interpreter
           working-directory: python
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: python/dist
@@ -123,7 +123,7 @@ jobs:
           args: --release -o dist --find-interpreter
           working-directory: python
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: python/dist
@@ -140,7 +140,7 @@ jobs:
           args: --release -o dist --target universal2-apple-darwin --find-interpreter
           working-directory: python
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: python/dist

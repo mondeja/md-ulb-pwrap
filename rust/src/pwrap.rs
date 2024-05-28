@@ -158,7 +158,7 @@ impl MarkdownParagraphWrapper {
 
     pub fn wrap(&mut self, width: usize) -> String {
         let mut result = String::new();
-        let first_line = self.next().unwrap_or(String::new());
+        let first_line = self.next().unwrap_or_default();
         result.push_str(&first_line);
         self.width = width;
         for line in self {
@@ -172,6 +172,7 @@ impl Iterator for MarkdownParagraphWrapper {
     type Item = String;
 
     fn next(&mut self) -> Option<Self::Item> {
+        #[allow(clippy::comparison_chain)]
         if self.characters_i == self.last_character_i {
             self.characters_i += 1;
             //
