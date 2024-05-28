@@ -7,7 +7,7 @@
 //! Only works for paragraphs that don't contain other
 //! [container blocks]. Respects the prohibition against wrapping
 //! text inside inline code blocks and links.
-//! 
+//!
 //! [unicode line breaking algorithm]: https://unicode.org/reports/tr14/
 //! [container blocks]: https://spec.commonmark.org/0.30/#container-blocks
 
@@ -16,15 +16,8 @@ pub mod pwrap;
 
 use crate::pwrap::MarkdownParagraphWrapper;
 
-pub fn ulb_wrap_paragraph(
-        text: &str,
-        width: usize,
-        first_line_width: usize,
-) -> String {
-    MarkdownParagraphWrapper::new(
-        text,
-        first_line_width,
-    ).wrap(width)
+pub fn ulb_wrap_paragraph(text: &str, width: usize, first_line_width: usize) -> String {
+    MarkdownParagraphWrapper::new(text, first_line_width).wrap(width)
 }
 
 #[cfg(test)]
@@ -334,11 +327,7 @@ mod tests {
             "BME280、\nHTU21D和\nLM75）。还可以配\n置",
         ).to_string(),
     )]
-    fn ulb_wrap_paragraph_test(
-            #[case] text: &str,
-            #[case] width: usize,
-            #[case] expected: String,
-    ) {
+    fn ulb_wrap_paragraph_test(#[case] text: &str, #[case] width: usize, #[case] expected: String) {
         assert_eq!(ulb_wrap_paragraph(text, width, width), expected);
     }
 }
