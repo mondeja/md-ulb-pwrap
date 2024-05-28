@@ -18,7 +18,7 @@ text inside inline code blocks and links.
 [unicode line breaking algorithm]: https://unicode.org/reports/tr14/
 [container blocks]: https://spec.commonmark.org/0.30/#container-blocks
 
-## Rust library
+## Usage
 
 ```bash
 cargo add md-ulb-pwrap
@@ -37,26 +37,12 @@ assert_eq!(
 );
 ````
 
-## Python bindings
-
-```bash
-pip install md-ulb-pwrap
-```
-
-````python
-from md_ulb_pwrap import ulb_wrap_paragraph
-
-markdown = "aaa ``` ``  ` a b c ``` ccc"
-expected_result = "aaa\n``` ``  ` a b c ```\nccc"
-assert ulb_wrap_paragraph(markdown, 3, 3) == expected_result
-````
-
 ## Reference
 
-**ulb_wrap_paragraph**(text: _str_, width: _int_, first_line_width: <i>int</i>) -> <i>str</i>
+**ulb_wrap_paragraph**(text: _&str_, width: _usize_, first_line_width: <i>usize</i>) -> <i>String</i>
 
-- **text** (_str_): The text to wrap.
-- **width** (_int_): The maximum width of the lines after the first.
-- **first_line_width** (_int_): The maximum width of the first line.
+- **text** (_&str_): The text to wrap.
+- **width** (_usize_): The maximum width of the lines after the first.
+- **first_line_width** (_usize_): The maximum width of the first line.
 
-**Returns** (_str_): The wrapped text.
+**Returns** (_String_): The wrapped text.

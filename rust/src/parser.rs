@@ -48,9 +48,8 @@ impl MarkdownWrapOpportunitiesParser {
         } else if self.context & EXITING_CODESPAN != 0 {
             if character == '`' {
                 self.current_codespan_number_of_backticks_inside += 1;
-            } else if 
-                    self.current_codespan_number_of_backticks_inside
-                    == self.current_codespan_number_of_backticks_at_start
+            } else if self.current_codespan_number_of_backticks_inside
+                == self.current_codespan_number_of_backticks_at_start
             {
                 self.context = INSIDE_TEXT;
                 self.current_codespan_number_of_backticks_at_start = 0;

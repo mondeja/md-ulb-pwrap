@@ -9,7 +9,7 @@ fn py_ulb_wrap_paragraph(text: &str, width: usize, first_line_width: usize) -> P
 
 #[pymodule]
 #[pyo3(name = "md_ulb_pwrap")]
-fn py_md_ulb_pwrap(_py: Python, m: &PyModule) -> PyResult<()> {
+fn py_md_ulb_pwrap(_py: Python, m: &Bound<PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(py_ulb_wrap_paragraph, m)?)?;
     Ok(())
 }

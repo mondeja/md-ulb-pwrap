@@ -25,8 +25,7 @@ pub struct MarkdownParagraphWrapper {
 
 impl MarkdownParagraphWrapper {
     pub fn new(text: &str, first_line_width: usize) -> Self {
-        let linebreaks = linebreaks(text)
-            .collect::<Vec<(usize, BreakOpportunity)>>();
+        let linebreaks = linebreaks(text).collect::<Vec<(usize, BreakOpportunity)>>();
         let linebreaks_length = linebreaks.len();
         let mut wrapper = MarkdownParagraphWrapper {
             width: first_line_width,
@@ -47,10 +46,7 @@ impl MarkdownParagraphWrapper {
         wrapper
     }
 
-    fn is_linebreak_possible(
-            &mut self,
-            linebreak: (usize, BreakOpportunity),
-    ) -> bool {
+    fn is_linebreak_possible(&mut self, linebreak: (usize, BreakOpportunity)) -> bool {
         let mut bindex = linebreak.0 - 1;
         let mut character: char;
         loop {
@@ -66,9 +62,7 @@ impl MarkdownParagraphWrapper {
                 bindex += 1;
                 character = '\0';
             } else {
-                let (_, (bindex_, character_)) = self.characters[
-                    self.codespan_parser.characters_i
-                ];
+                let (_, (bindex_, character_)) = self.characters[self.codespan_parser.characters_i];
                 bindex = bindex_;
                 character = character_;
             }
@@ -83,12 +77,12 @@ impl MarkdownParagraphWrapper {
                 // is inside text?
                 return self.codespan_parser.is_inside_text();
             } else if self.codespan_parser.is_inside_text() {
-                let (_, (_, prev_character)) = self.characters[
-                    self.codespan_parser.characters_i - 1
-                ];
+                let (_, (_, prev_character)) =
+                    self.characters[self.codespan_parser.characters_i - 1];
 
-                if is_link_breaking_character(character) ||
-                        is_link_breaking_character(prev_character) {
+                if is_link_breaking_character(character)
+                    || is_link_breaking_character(prev_character)
+                {
                     break;
                 }
                 self.codespan_parser.backup_state();
@@ -121,14 +115,11 @@ impl MarkdownParagraphWrapper {
             // can fit more text in the line
             while self.linebreaks_i < self.linebreaks_length {
                 let current_line_width =
-                    self.get_next_linebreak_index()
-                    - self.last_linebreak_i - 1;
+                    self.get_next_linebreak_index() - self.last_linebreak_i - 1;
                 if current_line_width > self.width {
                     break;
                 }
-                self.next_linebreak = self.linebreaks[
-                    self.linebreaks_i
-                ];
+                self.next_linebreak = self.linebreaks[self.linebreaks_i];
                 self.linebreaks_i += 1;
             }
             break;
@@ -158,7 +149,7 @@ impl MarkdownParagraphWrapper {
 
     pub fn wrap(&mut self, width: usize) -> String {
         let mut result = String::new();
-        let first_line = self.next().unwrap_or(String::new());
+        let first_line = self.next().unwrap_or_default();
         result.push_str(&first_line);
         self.width = width;
         for line in self {
@@ -172,6 +163,7 @@ impl Iterator for MarkdownParagraphWrapper {
     type Item = String;
 
     fn next(&mut self) -> Option<Self::Item> {
+        #[allow(clippy::comparison_chain)]
         if self.characters_i == self.last_character_i {
             self.characters_i += 1;
             //
