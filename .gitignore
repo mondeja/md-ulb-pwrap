@@ -1,7 +1,6 @@
 target/
 venv*/
-/Cargo.lock
-/pyproject.toml
+Cargo.lock
 node_modules/
 .prettier-cache
 
