@@ -231,8 +231,8 @@ mod tests {
         "aa[link\ntext][link-label]",
     )]
     #[case(
-    // TODO: breaking Commonmark spec at escaped space
-    // inside link destination (see implementation
+        // TODO: breaking Commonmark spec at escaped space
+        // inside link destination (see implementation
         // notes for details)
         &"[link text](link\\ destination 'link title')",
         4,
@@ -240,9 +240,9 @@ mod tests {
     )]
     #[case(
         // Don't wrap on '/' character
-        &"[foo bar](https://foo.bar/baz/qux/fox)",
+        &"[foo bar](https://github.com)",
         1,
-        "[foo\nbar](https://foo.bar/baz/qux/fox)",
+        "[foo\nbar](https://github.com)",
     )]
     #[case(
         // hard line breaks
