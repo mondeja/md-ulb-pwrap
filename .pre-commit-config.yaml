@@ -19,7 +19,7 @@ repos:
       - id: clippy
         args: [--, -Dwarnings]
   - repo: https://github.com/mondeja/rust-pc-hooks
-    rev: v1.1.0
+    rev: v1.3.0
     hooks:
       - id: cargo-readme
         alias: cargo-readme-workspace
@@ -42,3 +42,5 @@ repos:
           - --project-root=rust
           - --output=../python/README.md
           - --template=../python/README.tpl
+      - id: cargo-machete
+      - id: lychee
