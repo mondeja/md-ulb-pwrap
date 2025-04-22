@@ -258,4 +258,3 @@ jobs:
         with:
           command: upload
           args: --skip-existing *
-          working-directory: python
