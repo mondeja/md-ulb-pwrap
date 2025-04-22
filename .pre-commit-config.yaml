@@ -1,14 +1,26 @@
 repos:
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v4.0.0-alpha.8
+  - repo: https://github.com/rbubley/mirrors-prettier
+    rev: v3.5.3
     hooks:
       - id: prettier
+        types_or:
+          - toml
+          - css
+          - json
+          - json5
+          - markdown
+          - yaml
+        additional_dependencies:
+          - prettier
+          - prettier-plugin-toml
+        minimum_pre_commit_version: 2.9.0
         args:
           - --cache
           - --cache-location=.prettier-cache
           - --ignore-path=.gitignore
+        exclude: ^tests
   - repo: https://github.com/psf/black
-    rev: 24.4.2
+    rev: 25.1.0
     hooks:
       - id: black
   - repo: https://github.com/doublify/pre-commit-rust
@@ -42,5 +54,3 @@ repos:
           - --project-root=rust
           - --output=../python/README.md
           - --template=../python/README.tpl
-      - id: cargo-machete
-      - id: lychee

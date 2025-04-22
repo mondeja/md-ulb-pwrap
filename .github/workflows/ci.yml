@@ -27,6 +27,42 @@ jobs:
       - name: Lint
         run: pre-commit run --all-files --show-diff-on-failure
 
+  lychee:
+    name: Check URLs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore lychee cache
+        uses: actions/cache@v4
+        with:
+          path: .lycheecache
+          key: cache-lychee-${{ github.sha }}
+          restore-keys: cache-lychee-
+      - name: Run Lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: "--cache --max-cache-age 1d ."
+
+  cargo-machete:
+    name: Check for unused dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get toolchain
+        id: toolchain
+        uses: ./.github/actions/get-toolchain
+      - name: Setup Rust
+        uses: hecrj/setup-rust-action@v2
+        with:
+          rust-version: ${{ steps.toolchain.outputs.channel }}
+          profile: minimal
+      - name: Install cargo-machete
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-machete
+      - name: Run cargo-machete
+        run: cargo machete --skip-target-dir
+
   test-rust:
     name: Test Rust source
     runs-on: ${{ matrix.os }}
@@ -68,7 +104,8 @@ jobs:
           - 3.9
           - "3.10"
           - "3.11"
-          - 3.12.3
+          - "3.12"
+          - "3.13"
         os:
           - ubuntu-latest
           - windows-latest
