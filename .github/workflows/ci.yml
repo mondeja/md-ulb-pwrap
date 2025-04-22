@@ -160,9 +160,9 @@ jobs:
           name: windows-wheels
           path: python/dist
 
-  macos-13-py-wheels:
-    name: Build MacOS X86 Python wheels
-    runs-on: macos-13
+  macos-py-wheels:
+    name: Build MacOS Python wheels
+    runs-on: macos-latest
     needs: test-python
     steps:
       - uses: actions/checkout@v4
@@ -174,24 +174,7 @@ jobs:
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: macos-13-wheels
-          path: python/dist
-
-  macos-14-py-wheels:
-    name: Build MacOS ARM Python wheels
-    runs-on: macos-14
-    needs: test-python
-    steps:
-      - uses: actions/checkout@v4
-      - uses: PyO3/maturin-action@v1
-        with:
-          command: build
-          args: --release -o dist --find-interpreter
-          working-directory: python
-      - name: Upload wheels
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-14-wheels
+          name: macos-wheels
           path: python/dist
 
   wheels:
@@ -200,8 +183,7 @@ jobs:
     needs:
       - linux-py-wheels
       - windows-py-wheels
-      - macos-13-py-wheels
-      - macos-14-py-wheels
+      - macos-py-wheels
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -213,19 +195,14 @@ jobs:
           path: python/windows-dist
       - uses: actions/download-artifact@v4
         with:
-          name: macos-13-wheels
-          path: python/macos-13-dist
-      - uses: actions/download-artifact@v4
-        with:
-          name: macos-14-wheels
-          path: python/macos-14-dist
+          name: macos-wheels
+          path: python/macos-dist
       - name: Unify wheels
         run: |
           mkdir -p python/dist
           cp -r python/linux-dist/* python/dist/
           cp -r python/windows-dist/* python/dist/
-          cp -r python/macos-13-dist/* python/dist/
-          cp -r python/macos-14-dist/* python/dist/
+          cp -r python/macos-dist/* python/dist/
       - name: Print wheels
         run: ls -la python/dist
       - name: Upload wheels
