@@ -128,6 +128,7 @@ jobs:
   linux-py-wheels:
     name: Build Linux Python wheels
     runs-on: ubuntu-latest
+    needs: test-python
     steps:
       - uses: actions/checkout@v4
       - uses: PyO3/maturin-action@v1
@@ -145,6 +146,7 @@ jobs:
   windows-py-wheels:
     name: Build Windows Python wheels
     runs-on: windows-latest
+    needs: test-python
     steps:
       - uses: actions/checkout@v4
       - uses: PyO3/maturin-action@v1
@@ -158,9 +160,10 @@ jobs:
           name: windows-wheels
           path: python/dist
 
-  macos-py-wheels:
+  macos-11-py-wheels:
     name: Build MacOS Python wheels
-    runs-on: macos-latest
+    runs-on: macos-11
+    needs: test-python
     steps:
       - uses: actions/checkout@v4
       - uses: PyO3/maturin-action@v1
@@ -171,7 +174,24 @@ jobs:
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: macos-wheels
+          name: macos-11-wheels
+          path: python/dist
+
+  macos-10-py-wheels:
+    name: Build MacOS Python wheels
+    runs-on: macos-10
+    needs: test-python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: PyO3/maturin-action@v1
+        with:
+          command: build
+          args: --release -o dist --find-interpreter
+          working-directory: python
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-10-wheels
           path: python/dist
 
   wheels:
@@ -180,7 +200,8 @@ jobs:
     needs:
       - linux-py-wheels
       - windows-py-wheels
-      - macos-py-wheels
+      - macos-11-py-wheels
+      - macos-10-py-wheels
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -192,14 +213,19 @@ jobs:
           path: python/windows-dist
       - uses: actions/download-artifact@v4
         with:
-          name: macos-wheels
-          path: python/macos-dist
+          name: macos-10-wheels
+          path: python/macos-10-dist
+      - uses: actions/download-artifact@v4
+        with:
+          name: macos-11-wheels
+          path: python/macos-11-dist
       - name: Unify wheels
         run: |
           mkdir -p python/dist
           cp -r python/linux-dist/* python/dist/
           cp -r python/windows-dist/* python/dist/
-          cp -r python/macos-dist/* python/dist/
+          cp -r python/macos-10-dist/* python/dist/
+          cp -r python/macos-11-dist/* python/dist/
       - name: Print wheels
         run: ls -la python/dist
       - name: Upload wheels
@@ -255,3 +281,4 @@ jobs:
         with:
           command: upload
           args: --skip-existing *
+          working-directory: python
